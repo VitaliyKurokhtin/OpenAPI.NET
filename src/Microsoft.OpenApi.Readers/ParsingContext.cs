@@ -62,7 +62,7 @@ namespace Microsoft.OpenApi.Readers
                 case string version when version.StartsWith("3.1"):
                     VersionService = new OpenApiV3VersionService();
                     doc = VersionService.LoadDocument(RootNode);
-                    diagnostic.SpecificationVersion = OpenApiSpecVersion.OpenApi3_0;
+                    diagnostic.SpecificationVersion = OpenApiSpecVersion.OpenApi3_1;
                     break;
 
                 default:
@@ -93,6 +93,11 @@ namespace Microsoft.OpenApi.Readers
                     break;
 
                 case OpenApiSpecVersion.OpenApi3_0:
+                    this.VersionService = new OpenApiV3VersionService();
+                    element = this.VersionService.LoadElement<T>(node);
+                    break;
+
+                case OpenApiSpecVersion.OpenApi3_1:
                     this.VersionService = new OpenApiV3VersionService();
                     element = this.VersionService.LoadElement<T>(node);
                     break;
