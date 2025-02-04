@@ -233,6 +233,11 @@ namespace Microsoft.OpenApi.Models
         public IDictionary<string, IOpenApiExtension> Extensions { get; set; } = new Dictionary<string, IOpenApiExtension>();
 
         /// <summary>
+        /// This object stores any unrecognized keywords found in the schema.
+        /// </summary>
+        public IDictionary<string, IOpenApiAny> UnrecognizedKeywords { get; set; } = new Dictionary<string, IOpenApiAny>();
+
+        /// <summary>
         /// Indicates object is a placeholder reference to an actual object and does not contain valid data.
         /// </summary>
         public bool UnresolvedReference { get; set; }
@@ -290,6 +295,7 @@ namespace Microsoft.OpenApi.Models
             Xml = schema?.Xml != null ? new(schema?.Xml) : null;
             UnresolvedReference = schema?.UnresolvedReference ?? UnresolvedReference;
             Reference = schema?.Reference != null ? new(schema?.Reference) : null;
+            UnrecognizedKeywords = schema?.UnrecognizedKeywords != null ? new Dictionary<string, IOpenApiAny>(schema?.UnrecognizedKeywords) : null;
         }
 
         /// <summary>
@@ -462,6 +468,11 @@ namespace Microsoft.OpenApi.Models
 
             // extensions
             writer.WriteExtensions(Extensions, OpenApiSpecVersion.OpenApi3_0);
+
+            if (UnrecognizedKeywords.Any())
+            {
+                writer.WriteOptionalMap(OpenApiConstants.UnrecognizedKeywords, UnrecognizedKeywords, (w, s) => w.WriteAny(s));
+            }
 
             writer.WriteEndObject();
         }

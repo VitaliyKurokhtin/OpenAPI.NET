@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers.ParseNodes;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Microsoft.OpenApi.Readers.V3
 {
@@ -218,10 +219,20 @@ namespace Microsoft.OpenApi.Readers.V3
             }
 
             var schema = new OpenApiSchema();
-
+            
             foreach (var propertyNode in mapNode)
             {
-                propertyNode.ParseField(schema, _schemaFixedFields, _schemaPatternFields);
+                bool isRecognized = _schemaFixedFields.ContainsKey(propertyNode.Name) ||
+                                      _schemaPatternFields.Any(p => p.Key(propertyNode.Name));
+
+                if (isRecognized)
+                {
+                    propertyNode.ParseField(schema, _schemaFixedFields, _schemaPatternFields);
+                }
+                else
+                {
+                    schema.UnrecognizedKeywords[propertyNode.Name] = propertyNode.Value.CreateAny();
+                }
             }
 
             ProcessAnyFields(mapNode, schema, _schemaAnyFields);
