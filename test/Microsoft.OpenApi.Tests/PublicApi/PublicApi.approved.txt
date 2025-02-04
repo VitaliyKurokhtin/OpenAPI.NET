@@ -1394,8 +1394,11 @@ namespace Microsoft.OpenApi.Writers
         void WriteStartArray();
         void WriteStartObject();
         void WriteValue(bool value);
+        void WriteValue(System.DateTime value);
+        void WriteValue(System.DateTimeOffset value);
         void WriteValue(decimal value);
         void WriteValue(int value);
+        void WriteValue(long value);
         void WriteValue(object value);
         void WriteValue(string value);
     }
