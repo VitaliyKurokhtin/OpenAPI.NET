@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Readers;
+using Microsoft.OpenApi.Services;
 using Microsoft.OpenApi.Writers;
 using VerifyXunit;
 using Xunit;
@@ -366,6 +369,48 @@ namespace Microsoft.OpenApi.Tests.Models
             actual = actual.MakeLineBreaksEnvironmentNeutral();
             expected = expected.MakeLineBreaksEnvironmentNeutral();
             actual.Should().Be(expected);
+        }
+
+        [Fact]
+        public void ParseSchemaWithUnrecognizedKeywordsWorks()
+        {
+            var input = @"{
+    ""type"": ""string"",
+    ""format"": ""date-time"",
+    ""customKeyword"": ""customValue"",
+    ""anotherKeyword"": 42,
+    ""x-test"": ""test""
+}
+";
+            var schema = new OpenApiStringReader().ReadFragment<OpenApiSchema>(input, OpenApiSpecVersion.OpenApi3_1, out _);
+            schema.UnrecognizedKeywords.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void SerializeSchemaWithUnrecognizedPropertiesWorks()
+        {
+            // Arrange
+            var schema = new OpenApiSchema
+            {
+                UnrecognizedKeywords = new Dictionary<string, IOpenApiAny>()
+                {
+                    ["customKeyWord"] = new OpenApiString("bar"),
+                    ["anotherKeyword"] = new OpenApiInteger(42),
+                }
+            };
+
+            var expected = @"{
+  ""unrecognizedKeywords"": {
+    ""customKeyWord"": ""bar"",
+    ""anotherKeyword"": 42
+  }
+}";
+
+            // Act
+            var actual = schema.SerializeAsJson(OpenApiSpecVersion.OpenApi3_1);
+
+            // Assert
+            actual.MakeLineBreaksEnvironmentNeutral().Should().Be(expected.MakeLineBreaksEnvironmentNeutral());
         }
 
         [Theory]

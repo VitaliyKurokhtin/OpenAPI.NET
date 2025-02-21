@@ -11,7 +11,7 @@
         <Company>Microsoft</Company>
         <Title>Microsoft.OpenApi</Title>
         <PackageId>Microsoft.ApiManagement.OpenApi</PackageId>
-        <Version>1.4.5-apim4</Version>
+        <Version>1.4.5-apim7</Version>
         <Description>.NET models with JSON and YAML writers for OpenAPI specification</Description>
         <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
         <PackageTags>OpenAPI .NET</PackageTags>
@@ -41,6 +41,12 @@ Changes:
     <!-- https://github.com/clairernovotny/DeterministicBuilds#deterministic-builds -->
     <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+      <DebugType>embedded</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+      <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>

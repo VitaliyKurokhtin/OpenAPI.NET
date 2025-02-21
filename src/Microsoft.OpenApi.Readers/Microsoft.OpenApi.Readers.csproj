@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageIconUrl>http://go.microsoft.com/fwlink/?LinkID=288890</PackageIconUrl>
         <PackageProjectUrl>https://github.com/Microsoft/OpenAPI.NET</PackageProjectUrl>
@@ -10,7 +11,7 @@
         <Company>Microsoft</Company>
         <Title>Microsoft.OpenApi.Readers</Title>
         <PackageId>Microsoft.ApiManagement.OpenApi.Readers</PackageId>
-        <Version>1.4.5-apim4</Version>
+        <Version>1.4.5-apim7</Version>
         <Description>OpenAPI.NET Readers for JSON and YAML documents</Description>
         <Copyright>© Microsoft Corporation. All rights reserved.</Copyright>
         <PackageTags>OpenAPI .NET</PackageTags>
@@ -40,6 +41,12 @@ Changes:
     <!-- https://github.com/clairernovotny/DeterministicBuilds#deterministic-builds -->
     <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0|AnyCPU'">
+      <DebugType>embedded</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6.0|AnyCPU'">
+      <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
